@@ -18,7 +18,7 @@ module Api
       end
 
       def show
-        transaction = Transaction.find(id: params[:id])
+        transaction = Transaction.find(params[:id])
         render json: transaction, status: :ok
       end
 

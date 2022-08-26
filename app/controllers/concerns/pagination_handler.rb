@@ -9,6 +9,8 @@ module PaginationHandler
     if limit > 100
       raise PaginationError, "The per_page parameter can't be more than 100"
     end
+
+    limit = 100 if limit == 0
     
     page_number = params[:page].to_i
     offset = (page_number * limit) - limit
