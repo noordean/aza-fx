@@ -5,6 +5,14 @@ class Transaction < ApplicationRecord
 
   validates :input_amount,  numericality: { greater_than_or_equal_to: 0 }
   validates :output_amount,  numericality: { greater_than_or_equal_to: 0 }
-  validates :input_currency, inclusion: { in: VALID_CURRENCIES, allow_nil: false }
-  validates :output_currency, inclusion: { in: VALID_CURRENCIES, allow_nil: false }
+  validates :input_currency, inclusion: {
+    in: VALID_CURRENCIES,
+    message:  "is invalid. Currency should be one of #{VALID_CURRENCIES.join(", ")}",
+    allow_nil: false
+  }
+  validates :output_currency, inclusion: {
+  in: VALID_CURRENCIES,
+    message:  "is invalid. Currency should be one of #{VALID_CURRENCIES.join(", ")}",
+    allow_nil: false
+  }
 end
