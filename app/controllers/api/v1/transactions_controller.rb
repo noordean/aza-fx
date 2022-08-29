@@ -4,6 +4,8 @@ module Api
       include PaginationHandler
       include ExceptionHandler
 
+      before_action :find_transaction, only: [:show, :update]
+
       def create
         transaction = Transaction.create!(transaction_params)
 
@@ -18,12 +20,21 @@ module Api
       end
 
       def show
-        transaction = Transaction.find(params[:id])
-        render json: transaction, status: :ok
+        render json: @transaction, status: :ok
+      end
+
+      def update
+        @transaction.update!(transaction_params)
+  
+        render json: @transaction, status: :ok
       end
 
       private
 
+      def find_transaction
+        @transaction = Transaction.find(params[:id])
+      end
+  
       def transaction_params
         params.permit(
           :customer_id,

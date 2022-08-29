@@ -34,6 +34,18 @@ class Api::V1::TransactionsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "transaction create: fails both currencies are the same" do
+    @params[:output_currency] = 'USD'
+
+    post api_v1_transactions_path(@params)
+
+    assert_response :unprocessable_entity
+    assert_equal(
+      JSON.parse(response.body)['error'],
+      'Validation failed: Input currency Input and Output currencies cannot be the same'
+    )
+  end
+
   test "transaction create: fails if amount is negative" do
     @params[:input_amount] = -2000
 
@@ -70,5 +82,24 @@ class Api::V1::TransactionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal JSON.parse(response.body)['input_currency'], 'USD'
+  end
+
+  test "transaction update: Successful" do
+    put api_v1_transaction_path(id: @transaction.id, input_amount: 5000.0)
+
+    assert_response :success
+    assert_equal JSON.parse(response.body)['input_amount'], '5000.0'
+  end
+
+  test "transaction UPDATE: fails both currencies are the same" do
+    input_currency = @transaction.output_currency
+
+    put api_v1_transaction_path(id: @transaction.id, input_currency: input_currency)
+
+    assert_response :unprocessable_entity
+    assert_equal(
+      JSON.parse(response.body)['error'],
+      'Validation failed: Input currency Input and Output currencies cannot be the same'
+    )
   end
 end

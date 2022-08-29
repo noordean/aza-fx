@@ -15,4 +15,14 @@ class Transaction < ApplicationRecord
     message:  "is invalid. Currency should be one of #{VALID_CURRENCIES.join(", ")}",
     allow_nil: false
   }
+
+  before_validation :ensure_valid_currencies
+
+  private
+
+  def ensure_valid_currencies
+    if (input_currency == output_currency)
+      errors.add(:input_currency, :blank, message: "Input and Output currencies cannot be the same")
+    end
+  end
 end
